@@ -1,80 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Button Control</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script>
-		// Define the SheetDB API endpoint for your spreadsheet
-		var sheetdbEndpoint = "https://sheetdb.io/api/v1/ei7asvvizzuxh";
+<form method="post" id="sheetdb-form" action="https://sheetdb.io/api/v1/xbwhbh6lp7ne1">
+    1 for on and 0 for off: <input name="data[Status]">
+    Time: <input name="data[Time]" id="time">
+    <button type="submit">Submit</button>
+</form>
 
-		// Function to update the status in the Google Sheets spreadsheet
-		function updateStatus(status) {
-			// Define the data to be sent to the SheetDB API endpoint
-			var data = {status: status, timestamp: new Date().toLocaleString()};
-			// Send a POST request to the SheetDB API endpoint to update the data
-			$.ajax({
-				url: sheetdbEndpoint,
-				type: "POST",
-				data: JSON.stringify(data),
-				contentType: "application/json",
-				success: function(response) {
-					console.log("Data updated successfully");
-				},
-				error: function(xhr, status, error) {
-					console.log("Error updating data: " + error);
-				}
-			});
-		}
+<script>
+  var form = document.getElementById('sheetdb-form');
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    fetch(form.action, {
+        method : "POST",
+        body: new FormData(document.getElementById("sheetdb-form")),
+    }).then(
+        response => response.json()
+    ).then((html) => {
+      // you can put any JS code here
+      alert('success')
+    });
+  });
 
-		// Function to handle the "on" button click event
-		function onButtonClicked() {
-			console.log("On button clicked");
-			updateStatus("on");
-		}
+  // Function to update the time input field with the current time
+  function updateTime() {
+    var now = new Date();
+    var timeInput = document.getElementById("time");
+    timeInput.value = now.toLocaleString();
+  }
 
-		// Function to handle the "off" button click event
-		function offButtonClicked() {
-			console.log("Off button clicked");
-			updateStatus("off");
-		}
-
-		// Function to get the data from the SheetDB API endpoint and display it in a table
-		function loadData() {
-			// Send a GET request to the SheetDB API endpoint to retrieve the data
-			$.ajax({
-				url: sheetdbEndpoint,
-				type: "GET",
-				success: function(response) {
-					var data = response;
-					// Create a table to display the data
-					var table = "<table><tr><th>Status</th><th>Timestamp</th></tr>";
-					for (var i = 0; i < data.length; i++) {
-						var row = "<tr><td>" + data[i].status + "</td><td>" + data[i].timestamp + "</td></tr>";
-						table += row;
-					}
-					table += "</table>";
-					// Display the table on the page
-					$("#data").html(table);
-				},
-				error: function(xhr, status, error) {
-					console.log("Error retrieving data: " + error);
-				}
-			});
-		}
-
-		// Load the data from the SheetDB API endpoint when the page is loaded
-		$(document).ready(function() {
-			loadData();
-		});
-	</script>
-</head>
-<body>
-	<h1>Button Control</h1>
-	<button onclick="onButtonClicked()">On</button>
-	<button onclick="offButtonClicked()">Off</button>
-	<div id="data"></div>
-<div data-sheetdb-url="https://sheetdb.io/api/v1/ei7asvvizzuxh>
-    <p>{{A}}</p>
-</div>
-</body>
-</html>
+  // Update the time input field when the page is loaded and every second thereafter
+  updateTime();
+  setInterval(updateTime, 1000);
+</script>
